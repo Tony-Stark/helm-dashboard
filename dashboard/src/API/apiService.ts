@@ -3,8 +3,8 @@ import mockData from "./mockData";
 class ApiService {
   constructor(
     protected readonly baseUrl: string,
-    protected readonly isMockMode: boolean = true
-  ) {}
+    protected readonly isMockMode: boolean = false 
+  ) }
 
   getToolVersion = async () => {
     if (this.isMockMode) return mockData.status;

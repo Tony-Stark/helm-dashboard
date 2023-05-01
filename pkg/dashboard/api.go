@@ -18,8 +18,11 @@ var staticFS embed.FS
 
 func noCache(c *gin.Context) {
 	if c.GetHeader("Cache-Control") == "" { // default policy is not to cache
-		c.Header("Cache-Control", "no-cache")
+		c.Header("Cache-Control", "no-cache")	
 	}
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 	c.Next()
 }
 
