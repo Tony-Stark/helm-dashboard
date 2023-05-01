@@ -14,51 +14,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import apiService from "../API/apiService";
 import { Status } from "../data/types";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 export default function Header() {
+  const queryClient = useQueryClient()
+  const query = useQuery({queryKey:['version'], queryFn: apiService.getToolVersion});
   const [currentVersion, setCurrentVersion] = useState("");
   const [latestVersion, setLatestVersion] = useState("");
-
-  useEffect(() => {
-    getToolVersion();
-  }, []);
-
-  const getToolVersion = async () => {
-    try {
-      const status = await apiService.getToolVersion();
-      fillToolVersion(status);
-    } catch (error) {
-      console.error(error);
-      //reportError("Failed to get tool version", error)
-    }
-
-    // let limNS = null
-    // $.getJSON("/status").fail(function (xhr) { // maybe /options call in the future
-    //     reportError("Failed to get tool version", xhr)
-    // }).done(function (data) {
-    //     $("body").data("status", data)
-    //     fillToolVersion(data)
-    //     limNS = data.LimitedToNamespace
-    //     if (limNS) {
-    //         $("#limitNamespace").show().find("span").text(limNS)
-    //     }
-    //     fillClusters(limNS)
-
-    //     if (data.ClusterMode) {
-    //         $(".bi-power").hide()
-    //         $("#clusterFilterBlock").hide()
-    //     }
-    // })
-  };
-
-  function fillToolVersion(data: Status) {
-    setCurrentVersion(data.CurVer);
-    if (isNewerVersion(data.CurVer, data.LatestVer)) {
-      setLatestVersion(data.LatestVer);
-      //$(".upgrade-possible").show();
-    }
-  }
-
+  setLatestVersion(query.data?.LatestVer);
+  setCurrentVersion(query.data?.CurVer);
   function isNewerVersion(oldVersion: string, newVersion: string) {
     oldVersion = oldVersion?.replace("v", "");
     newVersion = newVersion?.replace("v", "");
