@@ -9,7 +9,7 @@ function RepositoryPage() {
   const handleRepositoryChanged = (selectedRepository: Repository) => {
     setSelectedRepository(selectedRepository);
   };
-
+  console.log(selectedRepository);
   return (
     <div className="flex flex-row">
       <RepositoriesList

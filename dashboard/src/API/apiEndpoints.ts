@@ -37,3 +37,12 @@ export const getRepositories = async () => {
     return await api.get("/api/helm/repositories").then((res) => res.data);
 }
 
+export const getRepositoryCharts = async (repositoryName: string) => {
+    const res = await api.get(`/api/helm/repositories/bitnami`);
+    console.log("Printing res.data")
+    console.log(res.data)
+    if (res.data === undefined) {
+        return "No charts found"
+    }
+    return res.data;
+}

@@ -4,17 +4,21 @@ import { Chart, Repository } from "../../data/types";
 import ChartViewer from "./ChartViewer";
 import { useQuery } from "@tanstack/react-query";
 import apiService from "../../API/apiService";
+import { useRepositoryCharts } from "../../hooks/useApi";
 
 type RepositoryViewerProps = {
   repository: Repository | undefined;
 };
 
 function RepositoryViewer({ repository }: RepositoryViewerProps) {
-  
-  const { data: charts } = useQuery<Chart[]>({
-    queryKey: ["charts", repository],
-    queryFn: apiService.getRepositoryCharts,
-  });
+  // set repository to a new Repository with name = "bitnami" and
+  // url = "https://charts.bitnami.com/bitnami"
+  // Repository is a type defined in data/types.ts
+  repository = {name: "bitnami", url: "https://charts.bitnami.com/bitnami"};
+  console.log("repository:" + repository?.name)
+  const { data: charts } = useRepositoryCharts(repository);
+  console.log(charts);
+
 
   const update = async () => {
     try {

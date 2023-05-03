@@ -45,6 +45,21 @@ export const useNamespaces = () => {
     });
 }
 
+export const useRepositories = () => {
+    return useQuery({
+        queryKey: ['repositories'],
+        queryFn: api.getRepositories
+    });
+}
+
+export const useRepositoryCharts = (repository: Repository) => {
+    return useQuery({
+        queryKey: ['repositoryCharts'],
+        enabled: true, 
+        queryFn: () => api.getRepositoryCharts("bitnami")
+    });
+}
 
 
-
+// we also need a hook for current repository, even though
+// it is not a query, but a state.
