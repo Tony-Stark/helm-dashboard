@@ -25,6 +25,7 @@ func noCache(c *gin.Context) {
 	c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 	c.Next()
 }
+// get cluster name by index
 
 func errorHandler(c *gin.Context) {
 	c.Next()

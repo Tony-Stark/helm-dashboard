@@ -11,8 +11,6 @@ import {
   BsBoxArrowUpRight,
 } from "react-icons/bs";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import apiService from "../API/apiService";
 import { Status } from "../data/types";
 import {
   useQuery,
@@ -21,14 +19,19 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import { useToolCurrentVersion, useToolLatestVersion } from "../hooks/useApi";
 
 export default function Header() {
   const queryClient = useQueryClient()
-  const query = useQuery({queryKey:['version'], queryFn: apiService.getToolVersion});
-  const [currentVersion, setCurrentVersion] = useState("");
-  const [latestVersion, setLatestVersion] = useState("");
-  setLatestVersion(query.data?.LatestVer);
-  setCurrentVersion(query.data?.CurVer);
+  // query the current version using react-query and getToolCurrentVersion
+  // from the API/apiEndpoints.ts file
+  const { data: currentVersion, status: currentVersionStatus } 
+  = useToolCurrentVersion()
+  // query the latest version using react-query and getToolLatestVersion
+  // from the API/apiEndpoints.ts file
+  const { data: latestVersion, status: latestVersionStatus }
+  = useToolLatestVersion()
+  console.log(latestVersion)
   function isNewerVersion(oldVersion: string, newVersion: string) {
     oldVersion = oldVersion?.replace("v", "");
     newVersion = newVersion?.replace("v", "");

@@ -89,7 +89,7 @@ class ApiService {
 
     return data;
   };
-
+  /*
   getValues = async ({ queryKey }) => {
     const [_, params] = queryKey;
     const { namespace, chart, version } = params;
@@ -102,7 +102,7 @@ class ApiService {
     const data = await response.text();
 
     return data;
-  };
+  }; */
 }
 
 const apiService = new ApiService("http://localhost:8080");
