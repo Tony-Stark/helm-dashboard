@@ -56,10 +56,42 @@ export const useRepositoryCharts = (repository: Repository) => {
     return useQuery({
         queryKey: ['repositoryCharts'],
         enabled: true, 
-        queryFn: () => api.getRepositoryCharts("bitnami")
+        queryFn: () => api.getRepositoryCharts(repository)
+    });
+}
+
+// hook for getting the index of a repository in the repositories array
+// it should rely on a previous hook, useRepositories, to get the repositories array
+// it should ultimately return a useQuery hook
+// it should rely on findRepositoryIndex function, which should be defined in apiEndpoints.ts
+// findRepositoryIndex should return the index of the repository in the repositories array
+// it should also rely on the 'repositories' query key to get the repositories array
+export const useRepositoryIndex = (repository: Repository) => {
+    return useQuery({
+        queryKey: ['repositories', 'index', repository?.name],
+        enabled: !!useRepositories,
+        queryFn: () => {
+            const repositories = useRepositories();
+            if (repositories.data) {
+                return api.findRepositoryIndex(repositories.data, repository);
+            }
+        }
     });
 }
 
 
-// we also need a hook for current repository, even though
-// it is not a query, but a state.
+
+
+//once we know the index, using useRepositoryIndex, we can get the url
+// by accessing the repositories array at the index we got from useRepositoryIndex
+export const useRepositoryUrl = (repository: Repository) => {
+    return useQuery({
+        queryKey: ['repositoryIndex', name],
+        enabled: !!useRepositoryIndex,
+        queryFn: () => {
+           const index = useRepositoryIndex(repository);
+           if (index === -1)
+           return useRepositories().data[useRepositoryIndex(repository)?.data].url
+        }
+    });
+}

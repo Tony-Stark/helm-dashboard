@@ -8,6 +8,7 @@
  */
 
 import axios from "axios";
+import { Repository } from "../data/types";
 
 const api = axios.create({
     baseURL: "http://localhost:8080",
@@ -37,12 +38,21 @@ export const getRepositories = async () => {
     return await api.get("/api/helm/repositories").then((res) => res.data);
 }
 
-export const getRepositoryCharts = async (repositoryName: string) => {
-    const res = await api.get(`/api/helm/repositories/bitnami`);
-    console.log("Printing res.data")
-    console.log(res.data)
-    if (res.data === undefined) {
-        return "No charts found"
-    }
+export const getRepositoryCharts = async (repository: Repository | undefined) => {
+    const res = await api.get(`/api/helm/repositories/${repository?.name}`);
     return res.data;
+
 }
+
+// findRepositoryIndex returns a promise of the index by repository name to be used
+// by the useRepositoryIndex hook in useApi.ts
+// it doesn't need to actually call the API, since the repositories are already
+// fetched by the useRepositories hook in useApi.ts
+
+export const findRepositoryIndex = async (repositoryName: string) => {
+    const res = await api.get("/api/helm/repositories");
+    const repositories = res.data;
+    const index = repositories.findIndex((repository: Repository) => repository.name === repositoryName);
+    return index;
+}
+
