@@ -52,11 +52,17 @@ export const useRepositories = () => {
     });
 }
 
-export const useRepositoryCharts = (repository: Repository) => {
+// hook for getting the charts of a repository
+// it gets {repository} as a parameter, which is the repository object that
+// contains the name of the repository, and we get for example from 
+// the params of the RepositoryViewer component
+// it should return a useQuery hook that queries the API for the charts of the repository
+
+export const useRepositoryCharts = (repository: Repository | undefined) => {
     return useQuery({
-        queryKey: ['repositoryCharts'],
-        enabled: true, 
-        queryFn: () => api.getRepositoryCharts(repository)
+        queryKey: ['repositoryCharts', repository?.name],
+        enabled: repository !== undefined, 
+        queryFn: () => api.getRepositoryCharts
     });
 }
 

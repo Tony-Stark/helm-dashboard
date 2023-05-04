@@ -5,6 +5,7 @@ import ChartViewer from "./ChartViewer";
 import { useQuery } from "@tanstack/react-query";
 import apiService from "../../API/apiService";
 import { useRepositoryCharts } from "../../hooks/useApi";
+import RepositoryPage from "../../pages/Repository";
 
 type RepositoryViewerProps = {
   repository: Repository | undefined;
@@ -15,7 +16,6 @@ function RepositoryViewer({ repository }: RepositoryViewerProps) {
   // url = "https://charts.bitnami.com/bitnami"
   // Repository is a type defined in data/types.ts
   repository = {name: "bitnami", url: "https://charts.bitnami.com/bitnami"};
-  console.log("repository:" + repository?.name)
   const { data: charts } = useRepositoryCharts(repository);
   console.log(charts);
 
@@ -47,7 +47,7 @@ function RepositoryViewer({ repository }: RepositoryViewerProps) {
     <div className="flex flex-col px-16 pt-5 gap-3 bg-white drop-shadow-lg">
       <span className="text-[#707583] font-bold text-xs">REPOSITORY</span>
       <div className="flex justify-between">
-        <span className="text-[#3d4048] text-4xl">airFlow</span>
+        <span className="text-[#3d4048] text-4xl">{repository.name}</span>
 
         <div className="flex flex-row gap-3">
           <button onClick={update}>

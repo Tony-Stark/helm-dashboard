@@ -9,6 +9,8 @@
 
 import axios from "axios";
 import { Repository } from "../data/types";
+import { useRepositories } from "../hooks/useApi";
+import { Query, QueryFunctionContext } from "@tanstack/react-query";
 
 const api = axios.create({
     baseURL: "http://localhost:8080",
@@ -38,21 +40,28 @@ export const getRepositories = async () => {
     return await api.get("/api/helm/repositories").then((res) => res.data);
 }
 
-export const getRepositoryCharts = async (repository: Repository | undefined) => {
-    const res = await api.get(`/api/helm/repositories/${repository?.name}`);
-    return res.data;
+// getRepositoryCharts returns a promise of the charts array of a repository
+// it should be used by the useRepositoryCharts hook in useApi.ts
+// this hook has a queryKey of ['repositoryCharts', repository.name] that
+// can be used by getRepositoryCharts to get the repository name.
+// queryKey is always passed to a query function.
+// queryKey is of type 
 
+export const getRepositoryCharts = async (context: QueryFunctionContext<[string, string]>) => {
+    const [_, repository] = context.queryKey;
+    return await api.get(`/api/helm/repositories/${repository}`).then((res) => res.data);
 }
+
+
 
 // findRepositoryIndex returns a promise of the index by repository name to be used
 // by the useRepositoryIndex hook in useApi.ts
-// it doesn't need to actually call the API, since the repositories are already
-// fetched by the useRepositories hook in useApi.ts
+// it won't call the API, but rather use the repositories array from the useRepositories hook
+// it should be used by the useRepositoryIndex hook in useApi.ts
+// repository name is sent using the queryKey of the useRepositoryIndex hook
 
 export const findRepositoryIndex = async (repositoryName: string) => {
-    const res = await api.get("/api/helm/repositories");
-    const repositories = res.data;
-    const index = repositories.findIndex((repository: Repository) => repository.name === repositoryName);
-    return index;
+    const repositories = await useRepositories();
+    const repositoryIndex = repositories.data.findIndex((repository: Repository) => repository.name === repositoryName);
+    return repositoryIndex;
 }
-
